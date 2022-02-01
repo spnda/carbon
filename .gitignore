@@ -1,0 +1,23 @@
+# CMake and build folders.
+bin/*
+build/*
+lib/*
+out/*
+CMakeSettings.json
+vcpkg_installed/*
+
+# IDE specific folders
+.idea/*
+.vscode/*
+.vs/*
+
+# Optional externel dependencies we don't want to host.
+external/*
+
+# Binary files
+*.spv
+*.exe
+*.dll
+*.lib
+*.a
+*.dylib
