@@ -24,7 +24,6 @@ void carbon::PhysicalDevice::create(carbon::Instance* instance, VkSurfaceKHR sur
         physicalDeviceSelector.set_required_features(deviceFeatures);
 
         VkPhysicalDeviceVulkan12Features vulkan12Features = {
-            .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES,
             .descriptorIndexing = true,
             .shaderSampledImageArrayNonUniformIndexing = true,
             .runtimeDescriptorArray = true,
@@ -32,13 +31,12 @@ void carbon::PhysicalDevice::create(carbon::Instance* instance, VkSurfaceKHR sur
             .timelineSemaphore = true,
             .bufferDeviceAddress = true,
         };
-        physicalDeviceSelector.add_required_extension_features(vulkan12Features);
+        physicalDeviceSelector.set_required_features_12(vulkan12Features);
 
         VkPhysicalDeviceVulkan13Features vulkan13Features = {
-            .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES,
             .dynamicRendering = true,
         };
-        physicalDeviceSelector.add_required_extension_features(vulkan13Features);
+        physicalDeviceSelector.set_required_features_13(vulkan13Features);
 
         VkPhysicalDeviceRayTracingPipelineFeaturesKHR rayTracingPipelineFeatures = {
             .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR,
