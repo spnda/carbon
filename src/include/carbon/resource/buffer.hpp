@@ -24,7 +24,10 @@ namespace carbon {
 
         VmaAllocator allocator = nullptr;
         VmaAllocation allocation = nullptr;
-        VkBuffer handle = nullptr;
+
+        VkBufferUsageFlags bufferUsage = 0;
+        VmaMemoryUsage memoryUsage = VMA_MEMORY_USAGE_CPU_TO_GPU;
+        VkMemoryPropertyFlags memoryProperties = 0;
 
         auto getCreateInfo(VkBufferUsageFlags bufferUsage) const -> VkBufferCreateInfo;
         static auto getBufferAddressInfo(VkBuffer handle) -> VkBufferDeviceAddressInfoKHR;
@@ -33,6 +36,7 @@ namespace carbon {
     protected:
         VkDeviceSize size = 0;
         VkDeviceAddress address = 0;
+        VkBuffer handle = nullptr;
 
     public:
         explicit Buffer(std::shared_ptr<carbon::Device> device, VmaAllocator allocator);
@@ -56,11 +60,13 @@ namespace carbon {
         void create(VkDeviceSize newSize, VkBufferUsageFlags bufferUsage, VmaMemoryUsage usage, VkMemoryPropertyFlags properties = 0);
         virtual void destroy();
         void lock() const;
+        // Resizes the buffer to a new size. Note that this zeros the memory.
+        virtual void resize(VkDeviceSize newSize);
         void unlock() const;
 
         [[nodiscard]] virtual auto getDeviceAddress() const -> const VkDeviceAddress;
         /** Gets a basic descriptor buffer info, with given size and given offset, or 0 if omitted. */
-        [[nodiscard]] auto getDescriptorInfo(uint64_t size, uint64_t offset = 0) const -> VkDescriptorBufferInfo;
+        [[nodiscard]] virtual auto getDescriptorInfo(uint64_t size, uint64_t offset) const -> VkDescriptorBufferInfo;
         [[nodiscard]] auto getHandle() const -> const VkBuffer;
         [[nodiscard]] auto getDeviceOrHostConstAddress() const -> const VkDeviceOrHostAddressConstKHR;
         [[nodiscard]] auto getDeviceOrHostAddress() const -> const VkDeviceOrHostAddressKHR;

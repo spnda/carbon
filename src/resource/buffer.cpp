@@ -24,15 +24,31 @@ carbon::Buffer& carbon::Buffer::operator=(const carbon::Buffer& buffer) {
     return *this;
 }
 
-void carbon::Buffer::create(const VkDeviceSize newSize, const VkBufferUsageFlags bufferUsage, const VmaMemoryUsage usage,
-                            const VkMemoryPropertyFlags properties) {
+void carbon::Buffer::create(const VkDeviceSize newSize, const VkBufferUsageFlags newBufferUsage, const VmaMemoryUsage newMemoryUsage,
+                            const VkMemoryPropertyFlags newMemoryProperties) {
     this->size = newSize;
+    this->bufferUsage = newBufferUsage;
+    this->memoryUsage = newMemoryUsage;
+    this->memoryProperties = newMemoryProperties;
+
     auto bufferCreateInfo = getCreateInfo(bufferUsage);
 
+    VmaAllocationCreateFlags allocationFlags = 0;
+    switch (memoryUsage) {
+        // Host mappable memory usages
+        case VMA_MEMORY_USAGE_GPU_ONLY:
+        case VMA_MEMORY_USAGE_CPU_ONLY:
+        case VMA_MEMORY_USAGE_CPU_TO_GPU:
+        case VMA_MEMORY_USAGE_GPU_TO_CPU:
+            allocationFlags |= VMA_ALLOCATION_CREATE_MAPPED_BIT;
+            break;
+        default: break;
+    }
+
     VmaAllocationCreateInfo allocationInfo = {
-        .flags = 0,
-        .usage = usage,
-        .requiredFlags = properties,
+        .flags = allocationFlags,
+        .usage = memoryUsage,
+        .requiredFlags = memoryProperties,
     };
 
     auto result = vmaCreateBuffer(allocator, &bufferCreateInfo, &allocationInfo, &handle, &allocation, nullptr);
@@ -57,6 +73,13 @@ void carbon::Buffer::destroy() {
 }
 
 void carbon::Buffer::lock() const { memoryMutex.lock(); }
+
+void carbon::Buffer::resize(VkDeviceSize newSize) {
+    if (newSize > size) {
+        destroy();
+        create(newSize, bufferUsage, memoryUsage, memoryProperties);
+    }
+}
 
 void carbon::Buffer::unlock() const { memoryMutex.unlock(); }
 

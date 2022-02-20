@@ -4,8 +4,11 @@
 #include <sstream>
 #include <utility>
 
+#include <fmt/core.h>
+
 #include <carbon/base/device.hpp>
 #include <carbon/shaders/shader.hpp>
+#include <carbon/utils.hpp>
 
 #ifdef WITH_NV_AFTERMATH
 #include <carbon/shaders/shader_database.hpp>
@@ -26,7 +29,8 @@ void carbon::ShaderModule::createShaderModule(uint32_t* spv, size_t spvSize) {
         .pCode = shaderBinary,
     };
 
-    vkCreateShaderModule(*device, &moduleCreateInfo, nullptr, &handle);
+    auto res = vkCreateShaderModule(*device, &moduleCreateInfo, nullptr, &handle);
+    checkResult(res, fmt::format("Failed to create shader module: {}", name));
 
     device->setDebugUtilsName(handle, name);
 #ifdef WITH_NV_AFTERMATH

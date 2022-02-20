@@ -18,9 +18,9 @@ namespace carbon {
         PFN_vkCreateAccelerationStructureKHR vkCreateAccelerationStructureKHR = nullptr;
         PFN_vkCreateRayTracingPipelinesKHR vkCreateRayTracingPipelinesKHR = nullptr;
         PFN_vkCreateSwapchainKHR vkCreateSwapchainKHR = nullptr;
-        PFN_vkCmdBeginRenderingKHR vkCmdBeginRendering = nullptr;
+        PFN_vkCmdBeginRendering vkCmdBeginRendering = nullptr;
         PFN_vkCmdBuildAccelerationStructuresKHR vkCmdBuildAccelerationStructuresKHR = nullptr;
-        PFN_vkCmdEndRenderingKHR vkCmdEndRendering = nullptr;
+        PFN_vkCmdEndRendering vkCmdEndRendering = nullptr;
         PFN_vkCmdSetCheckpointNV vkCmdSetCheckpointNV = nullptr;
         PFN_vkCmdTraceRaysKHR vkCmdTraceRaysKHR = nullptr;
         PFN_vkDestroyAccelerationStructureKHR vkDestroyAccelerationStructureKHR = nullptr;

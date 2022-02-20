@@ -13,6 +13,8 @@ project("carbon")
 set(CMAKE_CXX_STANDARD 20)
 
 # NVIDIA Aftermath as a CMake target
+# We search for this relative to the root directory of the project so that
+# the submodule can stay untouched.
 if (EXISTS "${CMAKE_SOURCE_DIR}/external/nv-aftermath" AND CMAKE_BUILD_TYPE STREQUAL "Debug" AND WIN32)
     set(NV_AFTERMATH_DIRECTORY "${CMAKE_SOURCE_DIR}/external/nv-aftermath")
     message(STATUS "Found NVIDIA Aftermath")

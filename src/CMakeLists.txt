@@ -12,7 +12,9 @@ function(add_source_directory)
     endforeach()
 endfunction()
 
-add_library(carbon SHARED)
+add_library(carbon STATIC)
+
+set_target_properties(carbon PROPERTIES VERSION "1.0.0")
 
 add_subdirectory("${CMAKE_SOURCE_DIR}/submodules/vk-mem-alloc"
     "${CMAKE_BINARY_DIR}/vk-mem-alloc")
