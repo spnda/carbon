@@ -61,3 +61,12 @@ void carbon::CommandPool::destroy() {
         vkDestroyCommandPool(*device, handle, nullptr);
     handle = nullptr;
 }
+
+void carbon::CommandPool::freeBuffers(std::initializer_list<carbon::CommandBuffer*> commandBuffers) {
+    std::vector<VkCommandBuffer> vkCommandBuffers(commandBuffers.size());
+    std::transform(commandBuffers.begin(), commandBuffers.end(), vkCommandBuffers.begin(), [](carbon::CommandBuffer* cmdBuffer) {
+        return cmdBuffer->handle;
+    });
+
+    vkFreeCommandBuffers(*device, handle, static_cast<uint32_t>(vkCommandBuffers.size()), vkCommandBuffers.data());
+}

@@ -16,9 +16,9 @@ add_library(carbon STATIC)
 
 set_target_properties(carbon PROPERTIES VERSION "1.0.0")
 
-add_subdirectory("${CMAKE_SOURCE_DIR}/submodules/vk-mem-alloc"
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../submodules/vk-mem-alloc"
     "${CMAKE_BINARY_DIR}/vk-mem-alloc")
-add_subdirectory("${CMAKE_SOURCE_DIR}/submodules/vk-bootstrap"
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../submodules/vk-bootstrap"
     "${CMAKE_BINARY_DIR}/vk-bootstrap")
 
 # Add NVIDIA Aftermath if it exists

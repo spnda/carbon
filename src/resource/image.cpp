@@ -95,6 +95,7 @@ void carbon::Image::destroy() {
         vmaDestroyImage(allocator, handle, allocation);
     imageView = nullptr;
     handle = nullptr;
+    allocation = nullptr;
 }
 
 VkDescriptorImageInfo carbon::Image::getDescriptorImageInfo() {

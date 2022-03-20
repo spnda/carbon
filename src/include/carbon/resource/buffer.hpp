@@ -29,7 +29,7 @@ namespace carbon {
         VmaMemoryUsage memoryUsage = VMA_MEMORY_USAGE_CPU_TO_GPU;
         VkMemoryPropertyFlags memoryProperties = 0;
 
-        auto getCreateInfo(VkBufferUsageFlags bufferUsage) const -> VkBufferCreateInfo;
+        auto getCreateInfo() const -> VkBufferCreateInfo;
         static auto getBufferAddressInfo(VkBuffer handle) -> VkBufferDeviceAddressInfoKHR;
         static auto getBufferDeviceAddress(carbon::Device* device, VkBufferDeviceAddressInfoKHR* addressInfo) -> VkDeviceAddress;
 

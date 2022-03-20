@@ -25,11 +25,11 @@ void carbon::StagingBuffer::destroy() {
 
 VkBuffer carbon::StagingBuffer::getDestinationHandle() const { return gpuBuffer->getHandle(); }
 
-VkDescriptorBufferInfo carbon::StagingBuffer::getDescriptorInfo(uint64_t size, uint64_t offset) const {
+VkDescriptorBufferInfo carbon::StagingBuffer::getDescriptorInfo(uint64_t rangeSize, uint64_t offset) const {
     return {
         .buffer = gpuBuffer->getHandle(),
         .offset = offset,
-        .range = size,
+        .range = rangeSize,
     };
 }
 

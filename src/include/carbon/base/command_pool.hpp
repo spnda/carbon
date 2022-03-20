@@ -24,5 +24,6 @@ namespace carbon {
         auto allocateBuffers(VkCommandBufferLevel level, VkCommandBufferUsageFlags bufferUsageFlags, uint32_t count)
             -> std::vector<std::shared_ptr<carbon::CommandBuffer>>;
         void destroy();
+        void freeBuffers(std::initializer_list<carbon::CommandBuffer*> commandBuffers);
     };
 } // namespace carbon

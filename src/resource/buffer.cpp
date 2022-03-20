@@ -31,7 +31,7 @@ void carbon::Buffer::create(const VkDeviceSize newSize, const VkBufferUsageFlags
     this->memoryUsage = newMemoryUsage;
     this->memoryProperties = newMemoryProperties;
 
-    auto bufferCreateInfo = getCreateInfo(bufferUsage);
+    auto bufferCreateInfo = getCreateInfo();
 
     VmaAllocationCreateFlags allocationFlags = 0;
     switch (memoryUsage) {
@@ -83,7 +83,7 @@ void carbon::Buffer::resize(VkDeviceSize newSize) {
 
 void carbon::Buffer::unlock() const { memoryMutex.unlock(); }
 
-auto carbon::Buffer::getCreateInfo(VkBufferUsageFlags bufferUsage) const -> VkBufferCreateInfo {
+auto carbon::Buffer::getCreateInfo() const -> VkBufferCreateInfo {
     return {
         .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
         .size = size,

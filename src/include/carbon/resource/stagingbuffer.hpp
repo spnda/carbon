@@ -25,7 +25,7 @@ namespace carbon {
         void destroy() override;
         void copyIntoVram(carbon::CommandBuffer* cmdBuffer);
         auto getDestinationHandle() const -> VkBuffer;
-        [[nodiscard]] auto getDescriptorInfo(uint64_t size, uint64_t offset) const -> VkDescriptorBufferInfo override;
+        [[nodiscard]] auto getDescriptorInfo(uint64_t rangeSize, uint64_t offset) const -> VkDescriptorBufferInfo override;
 
         // We override this function as the device address of a local buffer
         // is never interesting and only the device buffer address matters.

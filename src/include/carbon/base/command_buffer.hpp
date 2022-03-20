@@ -8,12 +8,15 @@
 
 namespace carbon {
     class Buffer;
+    class CommandPool;
     class Device;
     class Pipeline;
     class Queue;
     class StagingBuffer;
 
     class CommandBuffer {
+        friend class carbon::CommandPool;
+
         carbon::Device* device = nullptr;
         VkCommandBuffer handle = nullptr;
 
