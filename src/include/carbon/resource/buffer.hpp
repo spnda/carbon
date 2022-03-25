@@ -26,8 +26,9 @@ namespace carbon {
         VmaAllocation allocation = nullptr;
 
         VkBufferUsageFlags bufferUsage = 0;
-        VmaMemoryUsage memoryUsage = VMA_MEMORY_USAGE_CPU_TO_GPU;
+        VmaMemoryUsage memoryUsage = VMA_MEMORY_USAGE_AUTO;
         VkMemoryPropertyFlags memoryProperties = 0;
+        VmaAllocationCreateFlags allocationFlags = 0;
 
         auto getCreateInfo() const -> VkBufferCreateInfo;
         static auto getBufferAddressInfo(VkBuffer handle) -> VkBufferDeviceAddressInfoKHR;
@@ -57,7 +58,10 @@ namespace carbon {
             return (value + alignment - 1) & ~(alignment - 1);
         }
 
-        void create(VkDeviceSize newSize, VkBufferUsageFlags bufferUsage, VmaMemoryUsage usage, VkMemoryPropertyFlags properties = 0);
+        // Mapping memory will only be allowed on buffers where
+        // VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT or
+        // VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT was set.
+        void create(VkDeviceSize newSize, VkBufferUsageFlags bufferUsage, VmaAllocationCreateFlags flags, VkMemoryPropertyFlags properties = 0);
         virtual void destroy();
         void lock() const;
         // Resizes the buffer to a new size. Note that this zeros the memory.
@@ -66,7 +70,7 @@ namespace carbon {
 
         [[nodiscard]] virtual auto getDeviceAddress() const -> const VkDeviceAddress;
         /** Gets a basic descriptor buffer info, with given size and given offset, or 0 if omitted. */
-        [[nodiscard]] virtual auto getDescriptorInfo(uint64_t size, uint64_t offset) const -> VkDescriptorBufferInfo;
+        [[nodiscard]] virtual auto getDescriptorInfo(VkDeviceSize size, VkDeviceSize offset) const -> VkDescriptorBufferInfo;
         [[nodiscard]] auto getHandle() const -> const VkBuffer;
         [[nodiscard]] auto getDeviceOrHostConstAddress() const -> const VkDeviceOrHostAddressConstKHR;
         [[nodiscard]] auto getDeviceOrHostAddress() const -> const VkDeviceOrHostAddressKHR;

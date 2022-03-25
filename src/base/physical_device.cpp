@@ -16,6 +16,9 @@ void carbon::PhysicalDevice::create(carbon::Instance* instance, VkSurfaceKHR sur
     for (auto ext : requiredExtensions)
         physicalDeviceSelector.add_required_extension(ext);
 
+    physicalDeviceSelector.add_desired_extension(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME);
+    physicalDeviceSelector.add_desired_extension(VK_EXT_CALIBRATED_TIMESTAMPS_EXTENSION_NAME);
+
     // Should conditionally add these feature, but heck, who's going to use this besides me.
     {
         VkPhysicalDeviceFeatures deviceFeatures = {
@@ -62,17 +65,36 @@ void carbon::PhysicalDevice::create(carbon::Instance* instance, VkSurfaceKHR sur
     // Let vk-bootstrap select our physical device.
     auto res = physicalDeviceSelector.set_surface(surface).select();
     handle = getFromVkbResult(res);
+
+    memoryProperties = std::make_unique<VkPhysicalDeviceMemoryProperties2>();
+    memoryProperties->sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PROPERTIES_2;
+    vkGetPhysicalDeviceMemoryProperties2(handle.physical_device, memoryProperties.get());
 }
 
 std::string carbon::PhysicalDevice::getDeviceName() const { return std::string { handle.properties.deviceName }; }
 
-VkPhysicalDeviceProperties2 carbon::PhysicalDevice::getProperties(void* pNext) const {
+VkPhysicalDeviceProperties2 carbon::PhysicalDevice::getProperties(void* const pNext) const {
     VkPhysicalDeviceProperties2 deviceProperties = {
         .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2,
         .pNext = pNext,
     };
     vkGetPhysicalDeviceProperties2(handle, &deviceProperties);
     return deviceProperties;
+}
+
+VkPhysicalDeviceMemoryProperties2* carbon::PhysicalDevice::getMemoryProperties(void* const pNext) const {
+    return memoryProperties.get();
+}
+
+bool carbon::PhysicalDevice::supportsExtension(const char* extension) {
+    auto extensions = handle.get_extensions();
+    for (const auto& ext : extensions) {
+        if (std::strcmp(extension, ext) == 0) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 carbon::PhysicalDevice::operator VkPhysicalDevice() const { return handle.physical_device; }

@@ -26,13 +26,17 @@ namespace carbon {
         };
         vkb::PhysicalDevice handle = {};
 
+        std::unique_ptr<VkPhysicalDeviceMemoryProperties2> memoryProperties;
+
     public:
         explicit PhysicalDevice() = default;
 
         void addExtensions(const std::vector<const char*>& extensions);
         void create(carbon::Instance* instance, VkSurfaceKHR surface);
-        auto getDeviceName() const -> std::string;
-        auto getProperties(void* pNext) const -> VkPhysicalDeviceProperties2;
+        [[nodiscard]] auto getDeviceName() const -> std::string;
+        [[nodiscard]] auto getProperties(void* pNext) const -> VkPhysicalDeviceProperties2;
+        [[nodiscard]] auto getMemoryProperties(void* pNext) const -> VkPhysicalDeviceMemoryProperties2*;
+        [[nodiscard]] bool supportsExtension(const char* extension);
 
         operator VkPhysicalDevice() const;
     };

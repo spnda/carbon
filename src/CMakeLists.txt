@@ -16,10 +16,16 @@ add_library(carbon STATIC)
 
 set_target_properties(carbon PROPERTIES VERSION "1.0.0")
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../submodules/vk-mem-alloc"
-    "${CMAKE_BINARY_DIR}/vk-mem-alloc")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../submodules/vk-bootstrap"
     "${CMAKE_BINARY_DIR}/vk-bootstrap")
+
+# We don't want to link to the vk-mem-alloc library as it automatically
+# defines VMA_IMPLEMENTATION for us and we can then not define custom
+# macros to customise the library. Therefore, we'll just create a interface
+# target that only exposes the header.
+add_library(vk-mem-alloc INTERFACE)
+target_include_directories(vk-mem-alloc INTERFACE
+    "${CMAKE_CURRENT_SOURCE_DIR}/../submodules/vk-mem-alloc/include")
 
 # Add NVIDIA Aftermath if it exists
 if (TARGET nv::aftermath)
@@ -32,7 +38,7 @@ find_package(Vulkan REQUIRED)
 
 target_link_libraries(carbon PRIVATE fmt::fmt-header-only)
 target_link_libraries(carbon PUBLIC vk-bootstrap::vk-bootstrap)
-target_link_libraries(carbon PUBLIC VulkanMemoryAllocator)
+target_link_libraries(carbon PUBLIC vk-mem-alloc)
 target_link_libraries(carbon PUBLIC Vulkan::Vulkan)
 
 target_compile_features(carbon PRIVATE cxx_std_20)

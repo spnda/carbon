@@ -16,6 +16,9 @@ carbon::Buffer::Buffer(const carbon::Buffer& buffer)
       address(buffer.address) {}
 
 carbon::Buffer& carbon::Buffer::operator=(const carbon::Buffer& buffer) {
+    if (&buffer == this)
+        return *this;
+
     this->handle = buffer.handle;
     this->address = buffer.address;
     this->allocation = buffer.allocation;
@@ -24,26 +27,23 @@ carbon::Buffer& carbon::Buffer::operator=(const carbon::Buffer& buffer) {
     return *this;
 }
 
-void carbon::Buffer::create(const VkDeviceSize newSize, const VkBufferUsageFlags newBufferUsage, const VmaMemoryUsage newMemoryUsage,
-                            const VkMemoryPropertyFlags newMemoryProperties) {
+void carbon::Buffer::create(const VkDeviceSize newSize, const VkBufferUsageFlags newBufferUsage, const VmaAllocationCreateFlags newAllocationFlags, const VkMemoryPropertyFlags newProperties) {
     this->size = newSize;
     this->bufferUsage = newBufferUsage;
-    this->memoryUsage = newMemoryUsage;
-    this->memoryProperties = newMemoryProperties;
+    this->allocationFlags = newAllocationFlags;
+    this->memoryProperties = newProperties;
+
+    // If there is no flag set whether the access is sequential or random, we will add set the
+    // sequential write flag, as this will not cache our memory and will be the most 'vanilla'
+    // way of having a mapped buffer.
+    if ((allocationFlags & VMA_ALLOCATION_CREATE_MAPPED_BIT) != 0 &&
+        (allocationFlags & VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT) == 0 &&
+        (allocationFlags & VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT) == 0) {
+
+        allocationFlags |= VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT;
+    }
 
     auto bufferCreateInfo = getCreateInfo();
-
-    VmaAllocationCreateFlags allocationFlags = 0;
-    switch (memoryUsage) {
-        // Host mappable memory usages
-        case VMA_MEMORY_USAGE_GPU_ONLY:
-        case VMA_MEMORY_USAGE_CPU_ONLY:
-        case VMA_MEMORY_USAGE_CPU_TO_GPU:
-        case VMA_MEMORY_USAGE_GPU_TO_CPU:
-            allocationFlags |= VMA_ALLOCATION_CREATE_MAPPED_BIT;
-            break;
-        default: break;
-    }
 
     VmaAllocationCreateInfo allocationInfo = {
         .flags = allocationFlags,
@@ -104,7 +104,7 @@ auto carbon::Buffer::getBufferDeviceAddress(carbon::Device* device, VkBufferDevi
 
 auto carbon::Buffer::getDeviceAddress() const -> const VkDeviceAddress { return address; }
 
-auto carbon::Buffer::getDescriptorInfo(const uint64_t bufferRange, const uint64_t offset) const -> VkDescriptorBufferInfo {
+auto carbon::Buffer::getDescriptorInfo(const VkDeviceSize bufferRange, const VkDeviceSize offset) const -> VkDescriptorBufferInfo {
     return {
         .buffer = handle,
         .offset = offset,
@@ -136,7 +136,6 @@ auto carbon::Buffer::getMemoryBarrier(VkAccessFlags srcAccess, VkAccessFlags dst
 auto carbon::Buffer::getSize() const -> VkDeviceSize { return size; }
 
 void carbon::Buffer::memoryCopy(const void* source, uint64_t copySize, uint64_t offset) const {
-    auto guard = std::scoped_lock(memoryMutex);
     void* dst;
     this->mapMemory(&dst);
     memcpy(reinterpret_cast<uint8_t*>(dst) + offset, source, copySize); // uint8_t as we want bytes.
@@ -144,11 +143,15 @@ void carbon::Buffer::memoryCopy(const void* source, uint64_t copySize, uint64_t 
 }
 
 void carbon::Buffer::mapMemory(void** destination) const {
+    memoryMutex.lock();
     auto result = vmaMapMemory(allocator, allocation, destination);
     checkResult(result, "Failed to map memory");
 }
 
-void carbon::Buffer::unmapMemory() const { vmaUnmapMemory(allocator, allocation); }
+void carbon::Buffer::unmapMemory() const {
+    vmaUnmapMemory(allocator, allocation);
+    memoryMutex.unlock();
+}
 
 void carbon::Buffer::copyToBuffer(carbon::CommandBuffer* cmdBuffer, const carbon::Buffer* destination) {
     if (handle == nullptr || size == 0)

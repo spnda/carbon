@@ -11,7 +11,7 @@ void carbon::AccelerationStructure::createScratchBuffer(VkAccelerationStructureB
     scratchBuffer = std::make_shared<carbon::Buffer>(this->device, allocator, name);
 
     scratchBuffer->create(buildSizes.buildScratchSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT,
-                          VMA_MEMORY_USAGE_GPU_ONLY, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+                          0, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 }
 
 void carbon::AccelerationStructure::createResultBuffer(VkAccelerationStructureBuildSizesInfoKHR buildSizes) {
@@ -19,7 +19,7 @@ void carbon::AccelerationStructure::createResultBuffer(VkAccelerationStructureBu
 
     resultBuffer->create(buildSizes.accelerationStructureSize,
                          VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR | VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT,
-                         VMA_MEMORY_USAGE_GPU_ONLY, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+                         0, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 }
 
 void carbon::AccelerationStructure::createStructure(VkAccelerationStructureBuildSizesInfoKHR buildSizes) {

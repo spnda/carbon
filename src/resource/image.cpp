@@ -39,7 +39,7 @@ void carbon::Image::create(const VkFormat newFormat, const VkImageUsageFlags usa
     imageCreateInfo.initialLayout = currentLayouts[0];
 
     VmaAllocationCreateInfo allocationInfo = {};
-    allocationInfo.usage = VMA_MEMORY_USAGE_GPU_ONLY;
+    allocationInfo.usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE;
     allocationInfo.requiredFlags = VkMemoryPropertyFlags(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
     vmaCreateImage(allocator, &imageCreateInfo, &allocationInfo, &handle, &allocation, nullptr);
@@ -65,7 +65,7 @@ void carbon::Image::create(VkImageCreateInfo* imageCreateInfo, VkImageViewCreate
     currentLayouts[0] = initialLayout;
 
     VmaAllocationCreateInfo allocationInfo = {
-        .usage = VMA_MEMORY_USAGE_GPU_ONLY,
+        .usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE,
         .requiredFlags = VkMemoryPropertyFlags(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT),
     };
 

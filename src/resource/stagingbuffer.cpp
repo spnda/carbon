@@ -1,18 +1,18 @@
 #include <carbon/base/command_buffer.hpp>
 #include <carbon/resource/stagingbuffer.hpp>
 
-carbon::StagingBuffer::StagingBuffer(std::shared_ptr<carbon::Device> device, VmaAllocator allocator, std::string name)
+carbon::StagingBuffer::StagingBuffer(const std::shared_ptr<carbon::Device>& device, VmaAllocator allocator, const std::string& name)
     : Buffer(device, allocator, "staging_" + name) {
     gpuBuffer = std::make_unique<carbon::Buffer>(device, allocator, name);
 }
 
-void carbon::StagingBuffer::create(uint64_t bufferSize, VkBufferUsageFlags additionalBufferUsage) {
-    Buffer::create(bufferSize, bufferUsage | additionalBufferUsage, memoryUsage, memoryProperties);
+void carbon::StagingBuffer::create(uint64_t bufferSize, VkBufferUsageFlags additionalBufferUsage, VmaAllocationCreateFlags allocationFlags) {
+    Buffer::create(bufferSize, srcBufferUsage | additionalBufferUsage, srcAllocationFlags | allocationFlags, srcMemoryProperties);
 }
 
 void carbon::StagingBuffer::createDestinationBuffer(VkBufferUsageFlags usage) {
     if (size != 0 && handle != nullptr) {
-        gpuBuffer->create(size, dstBufferUsage | usage, VMA_MEMORY_USAGE_GPU_ONLY);
+        gpuBuffer->create(size, dstBufferUsage | usage, 0);
     }
 }
 
