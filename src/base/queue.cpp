@@ -7,7 +7,7 @@
 
 carbon::Queue::Queue(std::shared_ptr<carbon::Device> device, std::string name) : device(std::move(device)), name(std::move(name)) {}
 
-carbon::Queue::Queue(const carbon::Queue& queue) : handle(queue.handle), name(queue.name) {}
+carbon::Queue::Queue(const carbon::Queue& queue) : name(queue.name), handle(queue.handle) {}
 
 carbon::Queue::operator VkQueue() const { return this->handle; }
 

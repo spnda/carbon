@@ -30,6 +30,7 @@ namespace carbon {
 
     public:
         Image(std::shared_ptr<carbon::Device> device, VmaAllocator allocator, VkExtent2D extent, std::string name = {});
+        virtual ~Image() = default;
 
         Image& operator=(const Image& newImage);
 

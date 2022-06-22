@@ -5,10 +5,12 @@
 #include <iostream>
 #include <unordered_map>
 
+#include <robin_hood.h>
+
 #include <carbon/base/queue.hpp>
 #include <carbon/vulkan.hpp>
 
-static inline const std::unordered_map<VkResult, std::string> resultStrings = {
+static inline const robin_hood::unordered_flat_map<VkResult, std::string> resultStrings = {
     { VK_SUCCESS, "VK_SUCCESS" },
     { VK_NOT_READY, "VK_NOT_READY" },
     { VK_TIMEOUT, "VK_TIMEOUT" },

@@ -1,7 +1,7 @@
 #include <carbon/base/command_buffer.hpp>
 #include <carbon/resource/mappedbuffer.hpp>
 
-carbon::MappedBuffer::MappedBuffer(std::shared_ptr<carbon::Device> device, VmaAllocator allocator, std::string name)
+carbon::MappedBuffer::MappedBuffer(carbon::Device* device, VmaAllocator allocator, std::string name)
     : Buffer(device, allocator, name) {
 
 }

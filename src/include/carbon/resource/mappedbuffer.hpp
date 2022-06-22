@@ -8,7 +8,7 @@ namespace carbon {
     // usually up to 256MB.
     class MappedBuffer : public Buffer {
     public:
-        explicit MappedBuffer(std::shared_ptr<carbon::Device> device, VmaAllocator allocator, std::string name = "mappedbuffer");
+        explicit MappedBuffer(carbon::Device* device, VmaAllocator allocator, std::string name = "mappedbuffer");
         MappedBuffer(const MappedBuffer& buffer) = default;
 
         /**

@@ -4,7 +4,7 @@
 #include <carbon/utils.hpp>
 
 carbon::CommandPool::CommandPool(std::shared_ptr<carbon::Device> device, std::string name)
-    : device(std::move(device)), name(std::move(name)) {}
+    : name(std::move(name)), device(std::move(device)) {}
 
 void carbon::CommandPool::create(const uint32_t queueFamilyIndex, const VkCommandPoolCreateFlags flags) {
     VkCommandPoolCreateInfo commandPoolCreateInfo = {

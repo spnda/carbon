@@ -15,11 +15,14 @@ namespace carbon {
     class SwapchainImage : public Image {
         friend class carbon::Swapchain;
 
-        explicit SwapchainImage();
+        explicit SwapchainImage() = default;
         explicit SwapchainImage(std::shared_ptr<carbon::Device> device, VkExtent2D extent);
 
         void create(VkImage image, VkFormat newFormat);
         void destroy() override;
+
+    public:
+        ~SwapchainImage() override = default;
     };
 
     class Swapchain {

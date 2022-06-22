@@ -118,8 +118,8 @@ void carbon::Swapchain::destroy() {
 }
 
 VkResult carbon::Swapchain::acquireNextImage(std::shared_ptr<carbon::Semaphore> presentCompleteSemaphore, uint32_t* imageIndex) const {
-    return device->vkAcquireNextImageKHR(*device, swapchain, UINT64_MAX, presentCompleteSemaphore->getHandle(), (VkFence) nullptr,
-                                         imageIndex);
+    return device->vkAcquireNextImageKHR(*device, swapchain, UINT64_MAX, presentCompleteSemaphore->getHandle(),
+                                         static_cast<VkFence>(nullptr), imageIndex);
 }
 
 VkResult carbon::Swapchain::queuePresent(std::shared_ptr<carbon::Queue> queue, uint32_t imageIndex,

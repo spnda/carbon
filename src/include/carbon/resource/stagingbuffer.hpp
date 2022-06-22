@@ -18,8 +18,9 @@ namespace carbon {
         std::unique_ptr<carbon::Buffer> gpuBuffer;
 
     public:
-        explicit StagingBuffer(const std::shared_ptr<carbon::Device>& device, VmaAllocator allocator, const std::string& name = "stagingBuffer");
+        explicit StagingBuffer(carbon::Device* device, VmaAllocator allocator, const std::string& name = "stagingBuffer");
         StagingBuffer(const StagingBuffer& buffer) = default;
+        virtual ~StagingBuffer() override = default;
 
         /**
          * It is very likely that the source buffer should be mappable and most likely be
@@ -38,8 +39,7 @@ namespace carbon {
 
         // We override this function as the device address of a local buffer
         // is never interesting and only the device buffer address matters.
-        [[nodiscard]] auto getDeviceAddress() const -> const VkDeviceAddress override;
-
+        [[nodiscard]] auto getDeviceAddress() const -> VkDeviceAddress override;
         void resize(VkDeviceSize newSize) override;
     };
 } // namespace carbon

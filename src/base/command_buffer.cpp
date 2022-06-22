@@ -9,7 +9,7 @@
 #include <carbon/utils.hpp>
 
 carbon::CommandBuffer::CommandBuffer(VkCommandBuffer handle, carbon::Device* device, VkCommandBufferUsageFlags usageFlags)
-    : handle(handle), device(device), usageFlags(usageFlags) {}
+    : device(device), handle(handle), usageFlags(usageFlags) {}
 
 void carbon::CommandBuffer::begin() {
     if (handle == nullptr)

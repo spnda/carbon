@@ -8,7 +8,7 @@
 
 carbon::Fence::Fence(std::shared_ptr<carbon::Device> device, std::string name) : device(std::move(device)), name(std::move(name)) {}
 
-carbon::Fence::Fence(const carbon::Fence& fence) : device(std::move(fence.device)), handle(fence.handle), name(fence.name) {}
+carbon::Fence::Fence(const carbon::Fence& fence) : device(fence.device), name(fence.name), handle(fence.handle) {}
 
 carbon::Fence::operator VkFence() const { return handle; }
 

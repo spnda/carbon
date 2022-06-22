@@ -8,14 +8,14 @@ carbon::AccelerationStructure::AccelerationStructure(std::shared_ptr<carbon::Dev
     : device(std::move(device)), allocator(allocator), type(asType), name(std::move(name)) {}
 
 void carbon::AccelerationStructure::createScratchBuffer(VkAccelerationStructureBuildSizesInfoKHR buildSizes) {
-    scratchBuffer = std::make_shared<carbon::Buffer>(this->device, allocator, name);
+    scratchBuffer = std::make_shared<carbon::Buffer>(this->device.get(), allocator, name);
 
     scratchBuffer->create(buildSizes.buildScratchSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT,
                           0, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 }
 
 void carbon::AccelerationStructure::createResultBuffer(VkAccelerationStructureBuildSizesInfoKHR buildSizes) {
-    resultBuffer = std::make_shared<carbon::Buffer>(this->device, allocator, name);
+    resultBuffer = std::make_shared<carbon::Buffer>(this->device.get(), allocator, name);
 
     resultBuffer->create(buildSizes.accelerationStructureSize,
                          VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR | VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT,
@@ -89,9 +89,9 @@ carbon::AccelerationStructure::operator bool() const noexcept {
 carbon::BottomLevelAccelerationStructure::BottomLevelAccelerationStructure(std::shared_ptr<carbon::Device> device, VmaAllocator allocator,
                                                                            const std::string& name)
     : AccelerationStructure(device, allocator, carbon::AccelerationStructureType::BottomLevel, name) {
-    vertexBuffer = std::make_unique<carbon::StagingBuffer>(device, allocator, "vertexBuffer");
-    indexBuffer = std::make_unique<carbon::StagingBuffer>(device, allocator, "indexBuffer");
-    transformBuffer = std::make_unique<carbon::StagingBuffer>(device, allocator, "transformBuffer");
+    vertexBuffer = std::make_unique<carbon::StagingBuffer>(device.get(), allocator, "vertexBuffer");
+    indexBuffer = std::make_unique<carbon::StagingBuffer>(device.get(), allocator, "indexBuffer");
+    transformBuffer = std::make_unique<carbon::StagingBuffer>(device.get(), allocator, "transformBuffer");
 }
 
 void carbon::BottomLevelAccelerationStructure::createMeshBuffers(std::vector<PrimitiveData> primitiveData, VkTransformMatrixKHR transform) {

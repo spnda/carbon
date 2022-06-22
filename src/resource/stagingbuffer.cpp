@@ -1,7 +1,7 @@
 #include <carbon/base/command_buffer.hpp>
 #include <carbon/resource/stagingbuffer.hpp>
 
-carbon::StagingBuffer::StagingBuffer(const std::shared_ptr<carbon::Device>& device, VmaAllocator allocator, const std::string& name)
+carbon::StagingBuffer::StagingBuffer(carbon::Device* device, VmaAllocator allocator, const std::string& name)
     : Buffer(device, allocator, "staging_" + name) {
     gpuBuffer = std::make_unique<carbon::Buffer>(device, allocator, name);
 }
@@ -33,7 +33,7 @@ VkDescriptorBufferInfo carbon::StagingBuffer::getDescriptorInfo(uint64_t rangeSi
     };
 }
 
-const VkDeviceAddress carbon::StagingBuffer::getDeviceAddress() const { return gpuBuffer->getDeviceAddress(); }
+VkDeviceAddress carbon::StagingBuffer::getDeviceAddress() const { return gpuBuffer->getDeviceAddress(); }
 
 void carbon::StagingBuffer::resize(VkDeviceSize newSize) {
     carbon::Buffer::resize(newSize);

@@ -17,7 +17,7 @@ void carbon::PhysicalDevice::create(carbon::Instance* instance, VkSurfaceKHR sur
         physicalDeviceSelector.add_required_extension(ext);
 
     physicalDeviceSelector.add_desired_extension(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME);
-    physicalDeviceSelector.add_desired_extension(VK_EXT_CALIBRATED_TIMESTAMPS_EXTENSION_NAME);
+    // physicalDeviceSelector.add_desired_extension(VK_EXT_CALIBRATED_TIMESTAMPS_EXTENSION_NAME);
 
     // Should conditionally add these feature, but heck, who's going to use this besides me.
     {
@@ -26,7 +26,7 @@ void carbon::PhysicalDevice::create(carbon::Instance* instance, VkSurfaceKHR sur
         };
         physicalDeviceSelector.set_required_features(deviceFeatures);
 
-        VkPhysicalDeviceVulkan12Features vulkan12Features = {
+        /*VkPhysicalDeviceVulkan12Features vulkan12Features = {
             .descriptorIndexing = true,
             .shaderSampledImageArrayNonUniformIndexing = true,
             .runtimeDescriptorArray = true,
@@ -51,7 +51,7 @@ void carbon::PhysicalDevice::create(carbon::Instance* instance, VkSurfaceKHR sur
             .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR,
             .accelerationStructure = true,
         };
-        physicalDeviceSelector.add_required_extension_features(accelerationStructureFeatures);
+        physicalDeviceSelector.add_required_extension_features(accelerationStructureFeatures);*/
 
 #ifdef WITH_NV_AFTERMATH
         VkPhysicalDeviceDiagnosticsConfigFeaturesNV diagnosticsConfigFeatures = {
@@ -71,7 +71,9 @@ void carbon::PhysicalDevice::create(carbon::Instance* instance, VkSurfaceKHR sur
     vkGetPhysicalDeviceMemoryProperties2(handle.physical_device, memoryProperties.get());
 }
 
-std::string carbon::PhysicalDevice::getDeviceName() const { return std::string { handle.properties.deviceName }; }
+std::string_view carbon::PhysicalDevice::getDeviceName() const {
+    return std::string_view { handle.properties.deviceName };
+}
 
 VkPhysicalDeviceProperties2 carbon::PhysicalDevice::getProperties(void* const pNext) const {
     VkPhysicalDeviceProperties2 deviceProperties = {

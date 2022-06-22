@@ -1,19 +1,17 @@
-#include <vk_mem_alloc.h>
-
 #include <carbon/base/command_buffer.hpp>
 #include <carbon/base/device.hpp>
 #include <carbon/resource/buffer.hpp>
 #include <carbon/resource/image.hpp>
 #include <carbon/utils.hpp>
 
-carbon::Buffer::Buffer(std::shared_ptr<carbon::Device> device, VmaAllocator allocator) : device(std::move(device)), allocator(allocator) {}
+carbon::Buffer::Buffer(carbon::Device* device, VmaAllocator allocator) : device(device), allocator(allocator) {}
 
-carbon::Buffer::Buffer(std::shared_ptr<carbon::Device> device, VmaAllocator allocator, std::string name)
-    : device(std::move(device)), allocator(allocator), name(std::move(name)) {}
+carbon::Buffer::Buffer(carbon::Device* device, VmaAllocator allocator, std::string name)
+    : device(device), name(std::move(name)), allocator(allocator) {}
 
 carbon::Buffer::Buffer(const carbon::Buffer& buffer)
-    : device(buffer.device), name(buffer.name), allocator(buffer.allocator), allocation(buffer.allocation), handle(buffer.handle),
-      address(buffer.address) {}
+    : device(buffer.device), name(buffer.name), allocator(buffer.allocator), allocation(buffer.allocation), address(buffer.address),
+      handle(buffer.handle) {}
 
 carbon::Buffer& carbon::Buffer::operator=(const carbon::Buffer& buffer) {
     if (&buffer == this)
@@ -57,7 +55,7 @@ void carbon::Buffer::create(const VkDeviceSize newSize, const VkBufferUsageFlags
 
     if (isFlagSet(bufferUsage, VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT)) {
         auto addressInfo = getBufferAddressInfo(handle);
-        address = carbon::Buffer::getBufferDeviceAddress(device.get(), &addressInfo);
+        address = carbon::Buffer::getBufferDeviceAddress(device, &addressInfo);
     }
 
     if (!name.empty()) {
@@ -102,7 +100,7 @@ auto carbon::Buffer::getBufferDeviceAddress(carbon::Device* device, VkBufferDevi
     return vkGetBufferDeviceAddress(*device, addressInfo);
 }
 
-auto carbon::Buffer::getDeviceAddress() const -> const VkDeviceAddress { return address; }
+auto carbon::Buffer::getDeviceAddress() const -> VkDeviceAddress { return address; }
 
 auto carbon::Buffer::getDescriptorInfo(const VkDeviceSize bufferRange, const VkDeviceSize offset) const -> VkDescriptorBufferInfo {
     return {
@@ -112,7 +110,7 @@ auto carbon::Buffer::getDescriptorInfo(const VkDeviceSize bufferRange, const VkD
     };
 }
 
-auto carbon::Buffer::getHandle() const -> const VkBuffer { return this->handle; }
+auto carbon::Buffer::getHandle() const -> VkBuffer { return this->handle; }
 
 auto carbon::Buffer::getDeviceOrHostConstAddress() const -> const VkDeviceOrHostAddressConstKHR {
     return {

@@ -17,7 +17,7 @@ namespace carbon {
     class Buffer {
         friend class carbon::CommandBuffer;
 
-        std::shared_ptr<carbon::Device> device;
+        carbon::Device* device;
         std::string name;
 
         mutable std::mutex memoryMutex;
@@ -40,9 +40,10 @@ namespace carbon {
         VkBuffer handle = nullptr;
 
     public:
-        explicit Buffer(std::shared_ptr<carbon::Device> device, VmaAllocator allocator);
-        explicit Buffer(std::shared_ptr<carbon::Device> device, VmaAllocator allocator, std::string name);
+        explicit Buffer(carbon::Device* device, VmaAllocator allocator);
+        explicit Buffer(carbon::Device* device, VmaAllocator allocator, std::string name);
         Buffer(const Buffer& buffer);
+        virtual ~Buffer() = default;
 
         Buffer& operator=(const Buffer& buffer);
 
@@ -68,10 +69,10 @@ namespace carbon {
         virtual void resize(VkDeviceSize newSize);
         void unlock() const;
 
-        [[nodiscard]] virtual auto getDeviceAddress() const -> const VkDeviceAddress;
+        [[nodiscard]] virtual auto getDeviceAddress() const -> VkDeviceAddress;
         /** Gets a basic descriptor buffer info, with given size and given offset, or 0 if omitted. */
         [[nodiscard]] virtual auto getDescriptorInfo(VkDeviceSize size, VkDeviceSize offset) const -> VkDescriptorBufferInfo;
-        [[nodiscard]] auto getHandle() const -> const VkBuffer;
+        [[nodiscard]] auto getHandle() const -> VkBuffer;
         [[nodiscard]] auto getDeviceOrHostConstAddress() const -> const VkDeviceOrHostAddressConstKHR;
         [[nodiscard]] auto getDeviceOrHostAddress() const -> const VkDeviceOrHostAddressKHR;
         [[nodiscard]] auto getMemoryBarrier(VkAccessFlags srcAccess, VkAccessFlags dstAccess) const -> VkBufferMemoryBarrier;
